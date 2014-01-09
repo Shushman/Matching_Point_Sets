@@ -5,6 +5,7 @@
 using namespace std;
 
 bool compareX(const Point2D& p1, const Point2D& p2){
+	//Comparator for the sort algorithm
 	if(p1.getPx()<p2.getPx())
 		return true;
 	else if(p1.getPx()>p2.getPx())
@@ -48,19 +49,23 @@ void displist(vector<Point2D>& plist){
 	cout<<"\n";
 }
 
-double closestPair(vector<Point2D>& p_x, int start, int end, vector<Point2D>& p_y){//Both inclusive
-
+double closestPair(vector<Point2D>& p_x, int start, int end, vector<Point2D>& p_y){
+	
+	//Implements the optimized algorithm for obtaining the distance between the closest pair of points in a plane
 	int i=0,s=end-start+1;
+	//Base cases
 	if(s==2){
 		return (Point2D::dist(p_x[start],p_x[start+1]));
 	}
+	
 	if(s==3){
 		return minOfThree(Point2D::dist(p_x[start+1],p_x[start+2]),Point2D::dist(p_x[start+2],p_x[start+0]),Point2D::dist(p_x[start+0],p_x[start+1]));
 	}
+	
 	int mid = (start+end)/2;
 	vector<Point2D> pyl(mid-start+1);
 	vector<Point2D> pyr(end-mid);
-	Point2D medpt(p_x[mid]);
+	Point2D medpt(p_x[mid]); //The median point to use as the partition
 	double x_med = medpt.getPx();
 	s=p_y.size();
 	int j=0,k=0;
@@ -83,6 +88,8 @@ double closestPair(vector<Point2D>& p_x, int start, int end, vector<Point2D>& p_
 	x_med = medpt.getPx();
 	j=k=0;
 	int n=0;
+	
+	//Dividing the points based on which partition they are in
 	for(i=0;i<s;i++){
 		if(p_y[i].getPx()>=x_med-delta&&p_y[i].getPx()<=x_med+delta){
 			Q_y[n].copyPoint(p_y[i]);
@@ -94,6 +101,7 @@ double closestPair(vector<Point2D>& p_x, int start, int end, vector<Point2D>& p_
 	}
 	
 	int count=0;
+	//Search the rectangle around each point for possible closest neighbours
 	for(i=0;i<n;i++){
 		if(labels[i]==true){
 			j=i-1;
